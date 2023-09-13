@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Genre {
+  Masculino
+  Feminino
+  Outro
+}
+
+enum Visualize_style {
+  List
+  Card
+}
+
+enum Theme {
+  Dark
+  Light
+  Custom
+}
+
+enum Community_type {
+  Private
+  Public
+}
+
+model User {
+  id                    String    @id
+  email                 String    @unique
+  username              String    @unique
+  password              String
+  bio                   String?
+  birthday              DateTime?
+  created_at            DateTime  @default(now())
+  banner_img            String?
+  profile_img           String?
+  karma                 BigInt    @default(0)
+  block_list            String[]
+  follow_users          String[]
+  follow_communities    String[]
+  silencied_communities String[]
+
+  User_config    User_config?
+  Post           Post[]
+  Comment        Comment[]
+  Comment_Replie Comment_Replie[]
+}
+
+model User_config {
+  id              String          @id
+  user_id         String          @unique
+  genre           Genre?
+  user_links      String[]
+  user_theme      Theme           @default(Light)
+  visualize_style Visualize_style @default(Card)
+  open_post_type  Boolean         @default(true)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Community {
+  id            String         @id
+  owner_id      String
+  name          String         @unique
+  bio           String?
+  banner_img    String?
+  profile_img   String?
+  language      String?
+  country       String?
+  type          Community_type
+  mods_id       String[]
+  primary_topic String
+  topics        String[]
+  nsfw          Boolean
+  banned_user   String[]
+  created_at    DateTime       @default(now())
+  rules         Json[]
+
+  Community_style Community_style?
+  Post            Post[]
+}
+
+model Community_style {
+  id                    String  @id
+  community_id          String  @unique
+  theme_color           String?
+  body_color            String?
+  post_title_color      String?
+  post_background_color String?
+
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Post {
+  id           String    @id
+  community_id String
+  user_id      String
+  title        String
+  description  String?
+  img          String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime?
+  votes        BigInt    @default(0)
+  spoiler      Boolean
+
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Comment   Comment[]
+}
+
+model Comment {
+  id          String    @id
+  post_id     String
+  user_id     String
+  description String
+  votes       BigInt    @default(0)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+
+  user           User             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  post           Post             @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Comment_Replie Comment_Replie[]
+}
+
+model Comment_Replie {
+  id          String    @id
+  user_id     String
+  comment_id  String
+  description String
+  votes       BigInt    @default(0)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  comment Comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}

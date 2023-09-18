@@ -67,4 +67,22 @@ export class UserBusiness {
 			}
 		}
 	};
+
+	getUser = async (token: string) => {
+		try {
+			if (!token) throw new CustomError(409, 'Log in first');
+
+			const { id } = this.tokenManager.getTokenData(token);
+
+			const res = await this.userData.getUser(id);
+
+			return res;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
 }

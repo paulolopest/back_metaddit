@@ -42,4 +42,34 @@ export class UserData {
 			throw new Error(error.message);
 		}
 	};
+
+	getUser = async (id: string) => {
+		try {
+			const res = await prisma.user.findUnique({
+				select: {
+					id: true,
+					email: true,
+					username: true,
+					password: false,
+					bio: true,
+					birthday: true,
+					created_at: true,
+					banner_img: true,
+					profile_img: true,
+					karma: true,
+					block_list: true,
+					follow_users: true,
+					follow_communities: true,
+					favorites_communities: true,
+					silenced_communities: true,
+					User_config: true,
+				},
+				where: { id: id },
+			});
+
+			return res;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 }

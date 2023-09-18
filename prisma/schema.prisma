@@ -39,11 +39,12 @@ model User {
   created_at            DateTime  @default(now())
   banner_img            String?
   profile_img           String?
-  karma                 BigInt    @default(0)
+  karma                 Int       @default(0)
   block_list            String[]
   follow_users          String[]
   follow_communities    String[]
-  silencied_communities String[]
+  favorites_communities String[]
+  silenced_communities  String[]
 
   User_config    User_config?
   Post           Post[]

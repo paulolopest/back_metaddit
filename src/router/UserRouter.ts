@@ -2,9 +2,9 @@ import express, { Router } from 'express';
 import { UserData } from '../Data/User/UserData';
 import { IdGenerator } from '../Services/IdGenerator';
 import { HashManager } from '../Services/HashManager';
+import { TokenManager } from '../Services/TokenManager';
 import { UserBusiness } from '../Business/User/UserBusiness';
 import { UserController } from '../Controller/User/UserController';
-import { TokenManager } from '../Services/TokenManager';
 
 const userBusiness: UserBusiness = new UserBusiness(
 	new UserData(),
@@ -16,5 +16,9 @@ const userController: UserController = new UserController(userBusiness);
 
 export const userRouter: Router = express.Router();
 
+//Routes
+
 userRouter.post('/signup', userController.signup);
 userRouter.get('/login', userController.login);
+
+userRouter.get('/profile', userController.getUser);

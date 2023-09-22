@@ -19,6 +19,6 @@ export const userRouter: Router = express.Router();
 //Routes
 
 userRouter.post('/signup', userController.signup);
-userRouter.get('/login', userController.login);
+userRouter.post('/login', userController.login);
 
 userRouter.get('/profile', userController.getUser);

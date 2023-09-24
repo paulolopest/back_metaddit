@@ -85,4 +85,10 @@ export class UserBusiness {
 			}
 		}
 	};
+
+	getAllUsers = async () => {
+		const res = await this.userData.getAllUsers();
+
+		return res;
+	};
 }

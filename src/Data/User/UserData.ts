@@ -72,4 +72,10 @@ export class UserData {
 			throw new Error(error.message);
 		}
 	};
+
+	getAllUsers = async () => {
+		const res = await prisma.user.findMany();
+
+		return res;
+	};
 }

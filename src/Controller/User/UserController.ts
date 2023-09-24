@@ -51,18 +51,4 @@ export class UserController {
 			}
 		}
 	};
-
-	getAllUsers = async (req: Request, res: Response) => {
-		try {
-			const response = await this.userBusiness.getAllUsers();
-
-			res.send(response);
-		} catch (error: any) {
-			if (error instanceof CustomError) {
-				res.status(error.statusCode).send(error.message);
-			} else {
-				res.status(404).send(error.message);
-			}
-		}
-	};
 }

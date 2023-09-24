@@ -22,5 +22,3 @@ userRouter.post('/signup', userController.signup);
 userRouter.post('/login', userController.login);
 
 userRouter.get('/profile', userController.getUser);
-
-userRouter.get('/users', userController.getAllUsers);

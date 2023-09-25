@@ -9,9 +9,9 @@ export class UserController {
 		try {
 			const { email, username, password } = req.body;
 
-			await this.userBusiness.signup(email, username, password);
+			const response = await this.userBusiness.signup(email, username, password);
 
-			res.status(201).send('User created');
+			res.status(201).send(response);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				res.status(error.statusCode).send(error.message);

@@ -30,8 +30,11 @@ export class UserBusiness {
 			const id: string = this.idGenerator.generate();
 			const configId: string = this.idGenerator.generate();
 			const hashedPassword: string = await this.hashManager.generate(password);
+			const token = this.tokenManager.generate({ id: id });
 
 			await this.userData.signup(id, email, username, hashedPassword, configId);
+
+			return token;
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);

@@ -20,5 +20,6 @@ export const userRouter: Router = express.Router();
 
 userRouter.post('/signup', userController.signup);
 userRouter.post('/login', userController.login);
+userRouter.post('/user/validate-token', userController.validateToken);
 
 userRouter.get('/profile', userController.getUser);

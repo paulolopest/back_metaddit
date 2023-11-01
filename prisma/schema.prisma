@@ -75,9 +75,9 @@ model Community {
   country       String?
   type          Community_type
   mods_id       String[]
-  primary_topic String
+  primary_topic String?
   topics        String[]
-  nsfw          Boolean
+  nsfw          Boolean?       @default(false)
   banned_user   String[]
   created_at    DateTime       @default(now())
   rules         Json[]

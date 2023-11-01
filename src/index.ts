@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express, { Express } from 'express';
 import { userRouter } from './router/UserRouter';
+import { communityRouter } from './router/CommunityRouter';
 
 const port: number = 3000;
 const app: Express = express();
@@ -19,3 +20,4 @@ const server = app.listen(port, () => {
 // Route
 
 app.use(userRouter);
+app.use(communityRouter);

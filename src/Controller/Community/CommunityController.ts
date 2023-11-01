@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { CommunityBusiness } from '../../Business/Community/CommunityBusiness';
 import { CustomError } from './../../Models/CustomError';
+import { CommunityBusiness } from '../../Business/Community/CommunityBusiness';
 
 export class CommunityController {
 	constructor(private communityBusiness: CommunityBusiness) {}

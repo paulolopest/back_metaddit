@@ -1,7 +1,7 @@
-import { CommunityData } from '../../Data/Community/CommunityData';
-import { TokenManager } from '../../Services/TokenManager';
 import { CustomError } from './../../Models/CustomError';
+import { TokenManager } from '../../Services/TokenManager';
 import { IdGenerator } from './../../Services/IdGenerator';
+import { CommunityData } from '../../Data/Community/CommunityData';
 
 export class CommunityBusiness {
 	constructor(

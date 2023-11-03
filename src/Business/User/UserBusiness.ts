@@ -4,13 +4,15 @@ import { CustomError } from './../../Models/CustomError';
 import { IdGenerator } from '../../Services/IdGenerator';
 import { HashManager } from './../../Services/HashManager';
 import { TokenManager } from '../../Services/TokenManager';
+import { CommunityData } from '../../Data/Community/CommunityData';
 
 export class UserBusiness {
 	constructor(
 		private userData: UserData,
 		private idGenerator: IdGenerator,
 		private hashManager: HashManager,
-		private tokenManager: TokenManager
+		private tokenManager: TokenManager,
+		private communityData: CommunityData
 	) {}
 
 	signup = async (email: string, username: string, password: string) => {
@@ -97,6 +99,44 @@ export class UserBusiness {
 			if (!validate) throw new CustomError(409, 'Invalid token, login again');
 
 			return true;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	followCommunity = async (token: string, communityId: string) => {
+		try {
+			if (!token) throw new CustomError(409, 'Login first');
+			if (!communityId) throw new CustomError(400, 'Enter a community id');
+
+			const community = this.communityData.getCommunityById(communityId);
+
+			if (!community) throw new CustomError(404, 'Community not found');
+
+			const user = this.tokenManager.getTokenData(token);
+			const id = this.idGenerator.generate();
+
+			await this.userData.followCommunity(user.id, communityId, id);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	getFollowedCommunities = async (token: string) => {
+		try {
+			if (!token) throw new CustomError(409, 'Login first');
+
+			const { id } = this.tokenManager.getTokenData(token);
+
+			return await this.userData.getFollowedCommunities(id);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);

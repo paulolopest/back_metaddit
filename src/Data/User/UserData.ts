@@ -57,17 +57,44 @@ export class UserData {
 					banner_img: true,
 					profile_img: true,
 					karma: true,
-					block_list: true,
-					follow_users: true,
-					follow_communities: true,
-					favorites_communities: true,
-					silenced_communities: true,
 					User_config: true,
 				},
 				where: { id: id },
 			});
 
 			return res;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	followCommunity = async (userId: string, communityId: string, id?: string) => {
+		try {
+			await prisma.user_Community_Follow.create({
+				data: {
+					id: id,
+					user_id: userId,
+					community_id: communityId,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getFollowedCommunities = async (userId: string) => {
+		try {
+			const followedCommunities = await prisma.community.findMany({
+				where: {
+					User_Community_Follow: {
+						every: {
+							user_id: userId,
+						},
+					},
+				},
+			});
+
+			return followedCommunities;
 		} catch (error: any) {
 			throw new Error(error.message);
 		}

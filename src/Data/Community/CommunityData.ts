@@ -1,4 +1,5 @@
 import { prisma } from '../BaseDatabase';
+import { UserData } from './../User/UserData';
 
 type Rules = {
 	title: string;
@@ -6,6 +7,8 @@ type Rules = {
 };
 
 export class CommunityData {
+	constructor(private userData: UserData) {}
+
 	createCommunity = async (
 		id: string,
 		ownerId: string,
@@ -20,11 +23,35 @@ export class CommunityData {
 					owner_id: ownerId,
 					name: name,
 					type: communityPrivacy,
-					mods_id: [ownerId],
 					topics: [],
 					nsfw: nsfw,
-					banned_user: [],
 					rules: [],
+				},
+			});
+
+			await this.userData.followCommunity(ownerId, id);
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getCommunityById = async (id: string) => {
+		try {
+			return await prisma.community.findUnique({
+				where: {
+					id: id,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getCommunityByName = async (name: string) => {
+		try {
+			return await prisma.community.findUnique({
+				where: {
+					name: name,
 				},
 			});
 		} catch (error: any) {

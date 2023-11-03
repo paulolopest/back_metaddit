@@ -30,26 +30,28 @@ enum Community_type {
 }
 
 model User {
-  id                    String    @id
-  email                 String    @unique
-  username              String    @unique
-  password              String
-  bio                   String?
-  birthday              DateTime?
-  created_at            DateTime  @default(now())
-  banner_img            String?
-  profile_img           String?
-  karma                 Int       @default(0)
-  block_list            String[]
-  follow_users          String[]
-  follow_communities    String[]
-  favorites_communities String[]
-  silenced_communities  String[]
+  id          String    @id
+  email       String    @unique
+  username    String    @unique
+  password    String
+  bio         String?
+  birthday    DateTime?
+  created_at  DateTime  @default(now())
+  banner_img  String?
+  profile_img String?
+  karma       Int       @default(0)
 
-  User_config    User_config?
-  Post           Post[]
-  Comment        Comment[]
-  Comment_Replie Comment_Replie[]
+  User_config                User_config?
+  Post                       Post[]
+  Comment                    Comment[]
+  User_Friends               User_Friends[]
+  User_Blockeds              User_Blockeds[]
+  Comment_Replie             Comment_Replie[]
+  User_Community_Follow      User_Community_Follow[]
+  User_Silenced_Communities  User_Silenced_Communities[]
+  User_Favorites_Communities User_Favorites_Communities[]
+  Community_Mods             Community_Mods[]
+  Community_Banned_Users     Community_Banned_Users[]
 }
 
 model User_config {
@@ -74,16 +76,19 @@ model Community {
   language      String?
   country       String?
   type          Community_type
-  mods_id       String[]
   primary_topic String?
   topics        String[]
   nsfw          Boolean?       @default(false)
-  banned_user   String[]
   created_at    DateTime       @default(now())
   rules         Json[]
 
-  Community_style Community_style?
-  Post            Post[]
+  Community_style            Community_style?
+  Post                       Post[]
+  Community_Mods             Community_Mods[]
+  User_Community_Follow      User_Community_Follow[]
+  Community_Banned_Users     Community_Banned_Users[]
+  User_Silenced_Communities  User_Silenced_Communities[]
+  User_Favorites_Communities User_Favorites_Communities[]
 }
 
 model Community_style {
@@ -109,9 +114,9 @@ model Post {
   votes        BigInt    @default(0)
   spoiler      Boolean
 
+  Comment   Comment[]
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Comment   Comment[]
 }
 
 model Comment {
@@ -139,4 +144,68 @@ model Comment_Replie {
 
   user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   comment Comment @relation(fields: [comment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+// Relation
+
+model User_Community_Follow {
+  id           String   @id @default(uuid())
+  user_id      String
+  community_id String
+  created_at   DateTime @default(now())
+
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model User_Friends {
+  id            String @id
+  user_id       String
+  followed_user String
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model User_Blockeds {
+  id           String @id
+  user_id      String
+  blocked_user String
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model User_Favorites_Communities {
+  id           String @id
+  user_id      String
+  community_id String
+
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model User_Silenced_Communities {
+  id           String @id
+  user_id      String
+  community_id String
+
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Community_Mods {
+  id           String @id
+  community_id String
+  user_id      String
+
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Community_Banned_Users {
+  id           String @id
+  community_id String
+  banner_id    String
+
+  user      User      @relation(fields: [banner_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

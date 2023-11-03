@@ -4,9 +4,10 @@ import { TokenManager } from '../Services/TokenManager';
 import { CommunityData } from '../Data/Community/CommunityData';
 import { CommunityBusiness } from '../Business/Community/CommunityBusiness';
 import { CommunityController } from './../Controller/Community/CommunityController';
+import { UserData } from '../Data/User/UserData';
 
 const communityBusiness: CommunityBusiness = new CommunityBusiness(
-	new CommunityData(),
+	new CommunityData(new UserData()),
 	new IdGenerator(),
 	new TokenManager()
 );

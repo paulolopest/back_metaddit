@@ -19,6 +19,9 @@ export class CommunityBusiness {
 			const id = this.idGenerator.generate();
 			const user = this.tokenManager.getTokenData(token);
 
+			const verifyName = await this.communityData.getCommunityByName(name);
+			if (verifyName) throw new CustomError(409, 'Community name already in use');
+
 			await this.communityData.createCommunity(id, user.id, name, communityPrivacy, nsfw);
 		} catch (error: any) {
 			if (error instanceof CustomError) {

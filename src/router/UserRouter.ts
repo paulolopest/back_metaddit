@@ -25,6 +25,7 @@ userRouter.post('/login', userController.login);
 userRouter.post('/user/validate-token', userController.validateToken);
 
 userRouter.get('/profile', userController.getUser);
+userRouter.get('/profile/mod/:communityId', userController.getMyModCommunities);
 userRouter.get('/profile/followed/communities', userController.getFollowedCommunities);
 
 userRouter.post('/user/follow/community/:communityId', userController.followCommunity);

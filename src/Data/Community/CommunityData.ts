@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import { prisma } from '../BaseDatabase';
 import { UserData } from './../User/UserData';
 
@@ -30,6 +31,7 @@ export class CommunityData {
 			});
 
 			await this.userData.followCommunity(ownerId, id);
+			await this.addModerator(v4(), id, ownerId);
 		} catch (error: any) {
 			throw new Error(error.message);
 		}
@@ -52,6 +54,36 @@ export class CommunityData {
 			return await prisma.community.findUnique({
 				where: {
 					name: name,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getCommunityByOwner = async (ownerId: string, communityId: string) => {
+		try {
+			return prisma.community.findFirst({
+				where: {
+					id: communityId,
+
+					AND: {
+						owner_id: ownerId,
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	addModerator = async (id: string, communityId: string, userId: string) => {
+		try {
+			await prisma.community_Mods.create({
+				data: {
+					id: id,
+					community_id: communityId,
+					user_id: userId,
 				},
 			});
 		} catch (error: any) {

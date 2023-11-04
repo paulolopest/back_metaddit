@@ -22,4 +22,22 @@ export class CommunityController {
 			}
 		}
 	};
+
+	addModerator = async (req: Request, res: Response) => {
+		try {
+			const token = req.headers.authorization as string;
+			const { communityId } = req.params;
+			const { username } = req.body;
+
+			await this.communityBusiness.addModerator(token, username, communityId);
+
+			res.status(201).send('Moderator successfully added');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
 }

@@ -1,26 +1,6 @@
 import { prisma } from '../BaseDatabase';
 
 export class UserData {
-	getUserByEmail = async (email: string) => {
-		try {
-			return await prisma.user.findUnique({
-				where: { email },
-			});
-		} catch (error: any) {
-			throw new Error(error.message);
-		}
-	};
-
-	getUserByUsername = async (username: string) => {
-		try {
-			return await prisma.user.findUnique({
-				where: { username },
-			});
-		} catch (error: any) {
-			throw new Error(error.message);
-		}
-	};
-
 	signup = async (id: string, email: string, username: string, password: string, configId: string) => {
 		try {
 			await prisma.user.create({
@@ -68,6 +48,26 @@ export class UserData {
 		}
 	};
 
+	getUserByEmail = async (email: string) => {
+		try {
+			return await prisma.user.findUnique({
+				where: { email },
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getUserByUsername = async (username: string) => {
+		try {
+			return await prisma.user.findUnique({
+				where: { username },
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	followCommunity = async (userId: string, communityId: string, id?: string) => {
 		try {
 			await prisma.user_Community_Follow.create({
@@ -84,7 +84,7 @@ export class UserData {
 
 	getFollowedCommunities = async (userId: string) => {
 		try {
-			const followedCommunities = await prisma.community.findMany({
+			return await prisma.community.findMany({
 				where: {
 					User_Community_Follow: {
 						every: {
@@ -93,8 +93,22 @@ export class UserData {
 					},
 				},
 			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 
-			return followedCommunities;
+	getMyModCommunities = async (userId: string) => {
+		try {
+			return await prisma.community.findMany({
+				where: {
+					Community_Mods: {
+						every: {
+							user_id: userId,
+						},
+					},
+				},
+			});
 		} catch (error: any) {
 			throw new Error(error.message);
 		}

@@ -145,4 +145,20 @@ export class UserBusiness {
 			}
 		}
 	};
+
+	getMyModCommunities = async (token: string) => {
+		try {
+			if (!token) throw new CustomError(409, 'Login first');
+
+			const { id } = this.tokenManager.getTokenData(token);
+
+			return await this.userData.getMyModCommunities(id);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
 }

@@ -99,4 +99,20 @@ export class UserController {
 			}
 		}
 	};
+
+	getMyModCommunities = async (req: Request, res: Response) => {
+		try {
+			const token = req.headers.authorization as string;
+
+			const result = await this.userBusiness.getMyModCommunities(token);
+
+			res.status(200).send(result);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
 }

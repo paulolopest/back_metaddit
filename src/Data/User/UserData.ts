@@ -87,7 +87,7 @@ export class UserData {
 			return await prisma.community.findMany({
 				where: {
 					User_Community_Follow: {
-						every: {
+						some: {
 							user_id: userId,
 						},
 					},
@@ -103,7 +103,7 @@ export class UserData {
 			return await prisma.community.findMany({
 				where: {
 					Community_Mods: {
-						every: {
+						some: {
 							user_id: userId,
 						},
 					},

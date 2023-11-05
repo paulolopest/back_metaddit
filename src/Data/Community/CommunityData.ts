@@ -90,4 +90,20 @@ export class CommunityData {
 			throw new Error(error.message);
 		}
 	};
+
+	getMods = async (communityId: string) => {
+		try {
+			return await prisma.user.findMany({
+				where: {
+					Community_Mods: {
+						some: {
+							community_id: communityId,
+						},
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 }

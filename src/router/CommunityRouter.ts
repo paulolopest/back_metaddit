@@ -22,3 +22,4 @@ communityRouter.post('/community/create', communityController.createCommunity);
 communityRouter.post('/community/:communityId/mod/add', communityController.addModerator);
 
 communityRouter.get('/community/:communityId/get/mods', communityController.getMods);
+communityRouter.get('/community/:name', communityController.getCMTByName);

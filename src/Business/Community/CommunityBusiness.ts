@@ -96,4 +96,28 @@ export class CommunityBusiness {
 			}
 		}
 	};
+
+	verifyMod = async (token: string, communityName: string) => {
+		try {
+			if (!token) throw new CustomError(409, 'Login first');
+			if (!communityName) throw new CustomError(400, 'Enter a community name');
+
+			const community = await this.communityData.getCommunityByName(communityName);
+			const user: AuthenticationData = this.tokenManager.getTokenData(token);
+
+			if (!community) throw new CustomError(404, 'Community not found');
+
+			const check = await this.communityData.getSpecificMod(community.id, user.id);
+
+			if (!check) throw new CustomError(403, 'Permission denied');
+
+			return check;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
 }

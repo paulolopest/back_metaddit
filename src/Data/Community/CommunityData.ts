@@ -106,4 +106,20 @@ export class CommunityData {
 			throw new Error(error.message);
 		}
 	};
+
+	getSpecificMod = async (communityId: string, modId: string) => {
+		try {
+			return await prisma.community_Mods.findFirst({
+				where: {
+					community_id: communityId,
+
+					AND: {
+						user_id: modId,
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 }

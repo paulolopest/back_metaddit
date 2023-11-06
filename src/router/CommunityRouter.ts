@@ -23,3 +23,4 @@ communityRouter.post('/community/:communityId/mod/add', communityController.addM
 
 communityRouter.get('/community/:communityId/get/mods', communityController.getMods);
 communityRouter.get('/community/:name', communityController.getCMTByName);
+communityRouter.get('/community/:communityName/mod/verify', communityController.verifyMod);

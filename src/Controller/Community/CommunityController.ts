@@ -71,4 +71,21 @@ export class CommunityController {
 			}
 		}
 	};
+
+	verifyMod = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+			const { communityName } = req.params;
+
+			await this.communityBusiness.verifyMod(token, communityName);
+
+			res.status(200).send('Mod verified');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
 }

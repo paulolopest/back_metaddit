@@ -30,6 +30,13 @@ export class CommunityData {
 				},
 			});
 
+			await prisma.community_style.create({
+				data: {
+					id: v4(),
+					community_id: id,
+				},
+			});
+
 			await this.userData.followCommunity(ownerId, id);
 			await this.addModerator(v4(), id, ownerId);
 		} catch (error: any) {
@@ -51,9 +58,39 @@ export class CommunityData {
 
 	getCommunityByName = async (name: string) => {
 		try {
-			return await prisma.community.findUnique({
+			const cmt = await prisma.community.findUnique({
 				where: {
 					name: name,
+				},
+			});
+
+			return await prisma.community.findUnique({
+				where: {
+					name: cmt?.name,
+				},
+
+				include: {
+					_count: {
+						select: {
+							User_Community_Follow: {
+								where: {
+									community_id: cmt?.id,
+								},
+							},
+						},
+					},
+
+					Community_style: {
+						where: {
+							community_id: cmt?.id,
+						},
+					},
+
+					Community_Mods: {
+						where: {
+							community_id: cmt?.id,
+						},
+					},
 				},
 			});
 		} catch (error: any) {

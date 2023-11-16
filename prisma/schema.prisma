@@ -94,6 +94,8 @@ model Community {
 model Community_style {
   id                    String  @id
   community_id          String  @unique
+  member_name           String?
+  post_name             String?
   theme_color           String?
   body_color            String?
   post_title_color      String?

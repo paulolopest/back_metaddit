@@ -77,6 +77,12 @@ export class CommunityData {
 									community_id: cmt?.id,
 								},
 							},
+
+							Post: {
+								where: {
+									community_id: cmt?.id,
+								},
+							},
 						},
 					},
 

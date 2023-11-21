@@ -22,11 +22,6 @@ CREATE TABLE "User" (
     "banner_img" TEXT,
     "profile_img" TEXT,
     "karma" INTEGER NOT NULL DEFAULT 0,
-    "block_list" TEXT[],
-    "follow_users" TEXT[],
-    "follow_communities" TEXT[],
-    "favorites_communities" TEXT[],
-    "silenced_communities" TEXT[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -55,11 +50,9 @@ CREATE TABLE "Community" (
     "language" TEXT,
     "country" TEXT,
     "type" "Community_type" NOT NULL,
-    "mods_id" TEXT[],
     "primary_topic" TEXT,
     "topics" TEXT[],
-    "nsfw" BOOLEAN NOT NULL,
-    "banned_user" TEXT[],
+    "nsfw" BOOLEAN DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "rules" JSONB[],
 
@@ -70,6 +63,8 @@ CREATE TABLE "Community" (
 CREATE TABLE "Community_style" (
     "id" TEXT NOT NULL,
     "community_id" TEXT NOT NULL,
+    "member_name" TEXT,
+    "post_name" TEXT,
     "theme_color" TEXT,
     "body_color" TEXT,
     "post_title_color" TEXT,
@@ -120,6 +115,72 @@ CREATE TABLE "Comment_Replie" (
     CONSTRAINT "Comment_Replie_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "User_Community_Follow" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "community_id" TEXT NOT NULL,
+    "user_name" TEXT NOT NULL,
+    "community_name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_Community_Follow_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User_Friends" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "followed_user" TEXT NOT NULL,
+
+    CONSTRAINT "User_Friends_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User_Blockeds" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "blocked_user" TEXT NOT NULL,
+
+    CONSTRAINT "User_Blockeds_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User_Favorites_Communities" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "community_id" TEXT NOT NULL,
+
+    CONSTRAINT "User_Favorites_Communities_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User_Silenced_Communities" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "community_id" TEXT NOT NULL,
+
+    CONSTRAINT "User_Silenced_Communities_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Community_Mods" (
+    "id" TEXT NOT NULL,
+    "community_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+
+    CONSTRAINT "Community_Mods_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Community_Banned_Users" (
+    "id" TEXT NOT NULL,
+    "community_id" TEXT NOT NULL,
+    "banner_id" TEXT NOT NULL,
+
+    CONSTRAINT "Community_Banned_Users_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -158,3 +219,39 @@ ALTER TABLE "Comment_Replie" ADD CONSTRAINT "Comment_Replie_user_id_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "Comment_Replie" ADD CONSTRAINT "Comment_Replie_comment_id_fkey" FOREIGN KEY ("comment_id") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Community_Follow" ADD CONSTRAINT "User_Community_Follow_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Community_Follow" ADD CONSTRAINT "User_Community_Follow_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Friends" ADD CONSTRAINT "User_Friends_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Blockeds" ADD CONSTRAINT "User_Blockeds_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Favorites_Communities" ADD CONSTRAINT "User_Favorites_Communities_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Favorites_Communities" ADD CONSTRAINT "User_Favorites_Communities_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Silenced_Communities" ADD CONSTRAINT "User_Silenced_Communities_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User_Silenced_Communities" ADD CONSTRAINT "User_Silenced_Communities_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Community_Mods" ADD CONSTRAINT "Community_Mods_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Community_Mods" ADD CONSTRAINT "Community_Mods_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Community_Banned_Users" ADD CONSTRAINT "Community_Banned_Users_banner_id_fkey" FOREIGN KEY ("banner_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Community_Banned_Users" ADD CONSTRAINT "Community_Banned_Users_community_id_fkey" FOREIGN KEY ("community_id") REFERENCES "Community"("id") ON DELETE CASCADE ON UPDATE CASCADE;

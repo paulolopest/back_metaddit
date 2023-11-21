@@ -10,6 +10,37 @@ type Rules = {
 export class CommunityData {
 	constructor(private userData: UserData) {}
 
+	addModerator = async (id: string, communityId: string, userId: string) => {
+		try {
+			const user = await prisma.user.findUnique({
+				where: {
+					id: userId,
+				},
+			});
+			const community = await prisma.community.findUnique({
+				where: {
+					id: communityId,
+				},
+			});
+
+			if (user && community) {
+				await prisma.community_Mods.create({
+					data: {
+						id: id,
+						community_id: communityId,
+						user_id: userId,
+						user_name: user.username,
+						community_name: community.name,
+					},
+				});
+			} else {
+				throw new Error('Unexpected error on add the administrator');
+			}
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	createCommunity = async (
 		id: string,
 		ownerId: string,
@@ -44,6 +75,22 @@ export class CommunityData {
 		}
 	};
 
+	addDescription = async (communityId: string, description: string) => {
+		try {
+			await prisma.community.update({
+				where: {
+					id: communityId,
+				},
+
+				data: {
+					bio: description,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	getCommunityById = async (id: string) => {
 		try {
 			return await prisma.community.findUnique({
@@ -64,41 +111,43 @@ export class CommunityData {
 				},
 			});
 
-			return await prisma.community.findUnique({
-				where: {
-					name: cmt?.name,
-				},
+			if (cmt) {
+				return await prisma.community.findUnique({
+					where: {
+						name: cmt.name,
+					},
 
-				include: {
-					_count: {
-						select: {
-							User_Community_Follow: {
-								where: {
-									community_id: cmt?.id,
+					include: {
+						_count: {
+							select: {
+								User_Community_Follow: {
+									where: {
+										community_id: cmt.id,
+									},
+								},
+
+								Post: {
+									where: {
+										community_id: cmt.id,
+									},
 								},
 							},
+						},
 
-							Post: {
-								where: {
-									community_id: cmt?.id,
-								},
+						Community_style: {
+							where: {
+								community_id: cmt.id,
+							},
+						},
+
+						Community_Mods: {
+							where: {
+								community_id: cmt.id,
 							},
 						},
 					},
-
-					Community_style: {
-						where: {
-							community_id: cmt?.id,
-						},
-					},
-
-					Community_Mods: {
-						where: {
-							community_id: cmt?.id,
-						},
-					},
-				},
-			});
+				});
+			}
 		} catch (error: any) {
 			throw new Error(error.message);
 		}
@@ -120,23 +169,21 @@ export class CommunityData {
 		}
 	};
 
-	addModerator = async (id: string, communityId: string, userId: string) => {
-		try {
-			await prisma.community_Mods.create({
-				data: {
-					id: id,
-					community_id: communityId,
-					user_id: userId,
-				},
-			});
-		} catch (error: any) {
-			throw new Error(error.message);
-		}
-	};
-
 	getMods = async (communityId: string) => {
 		try {
 			return await prisma.user.findMany({
+				select: {
+					id: true,
+					email: true,
+					username: true,
+					password: false,
+					bio: true,
+					birthday: true,
+					created_at: true,
+					banner_img: true,
+					profile_img: true,
+					karma: true,
+				},
 				where: {
 					Community_Mods: {
 						some: {

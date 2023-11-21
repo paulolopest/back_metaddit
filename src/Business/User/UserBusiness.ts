@@ -55,11 +55,11 @@ export class UserBusiness {
 				? await this.userData.getUserByEmail(credential)
 				: await this.userData.getUserByUsername(credential);
 
-			if (!user) throw new CustomError(409, 'Incorrect credentials');
+			if (!user) throw new CustomError(401, 'Incorrect credentials');
 
 			const verifyPassword: boolean = await this.hashManager.compare(password, user.password);
 
-			if (!verifyPassword) throw new CustomError(409, 'Incorrect password');
+			if (!verifyPassword) throw new CustomError(401, 'Incorrect password');
 
 			const token = this.tokenManager.generate({ id: user.id });
 
@@ -75,7 +75,7 @@ export class UserBusiness {
 
 	getUser = async (token: string) => {
 		try {
-			if (!token) throw new CustomError(409, 'Log in first');
+			if (!token) throw new CustomError(401, 'Log in first');
 
 			const { id } = this.tokenManager.getTokenData(token);
 
@@ -96,7 +96,7 @@ export class UserBusiness {
 			if (!token) throw new CustomError(400, 'Enter a token');
 
 			const validate = this.tokenManager.getTokenData(token);
-			if (!validate) throw new CustomError(409, 'Invalid token, login again');
+			if (!validate) throw new CustomError(401, 'Invalid token, login again');
 
 			return true;
 		} catch (error: any) {
@@ -120,7 +120,7 @@ export class UserBusiness {
 			const user = this.tokenManager.getTokenData(token);
 			const id = this.idGenerator.generate();
 
-			await this.userData.followCommunity(user.id, communityId, id);
+			await this.userData.followCommunity(user.id, communityId);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
@@ -132,7 +132,7 @@ export class UserBusiness {
 
 	getFollowedCommunities = async (token: string) => {
 		try {
-			if (!token) throw new CustomError(409, 'Login first');
+			if (!token) throw new CustomError(401, 'Login first');
 
 			const { id } = this.tokenManager.getTokenData(token);
 

@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import { prisma } from '../BaseDatabase';
 
 export class UserData {
@@ -68,13 +69,39 @@ export class UserData {
 		}
 	};
 
-	followCommunity = async (userId: string, communityId: string, id?: string) => {
+	getUserById = async (id: string) => {
 		try {
+			return await prisma.user.findUnique({
+				where: { id },
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	followCommunity = async (userId: string, communityId: string) => {
+		try {
+			const user = await prisma.user.findUnique({
+				where: {
+					id: userId,
+				},
+			});
+
+			const community = await prisma.community.findUnique({
+				where: {
+					id: communityId,
+				},
+			});
+
+			if (!user || !community) throw new Error('Unexpected error');
+
 			await prisma.user_Community_Follow.create({
 				data: {
-					id: id,
+					id: v4(),
 					user_id: userId,
 					community_id: communityId,
+					user_name: user.username,
+					community_name: community.name,
 				},
 			});
 		} catch (error: any) {

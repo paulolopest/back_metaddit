@@ -20,6 +20,7 @@ export const communityRouter: Router = express.Router();
 
 communityRouter.post('/community/create', communityController.createCommunity);
 communityRouter.post('/community/:communityId/mod/add', communityController.addModerator);
+communityRouter.post('/community/:communityId/description/add', communityController.addDescription);
 
 communityRouter.get('/community/:communityId/get/mods', communityController.getMods);
 communityRouter.get('/community/:name', communityController.getCMTByName);

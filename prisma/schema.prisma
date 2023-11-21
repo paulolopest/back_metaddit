@@ -151,10 +151,12 @@ model Comment_Replie {
 // Relation
 
 model User_Community_Follow {
-  id           String   @id @default(uuid())
-  user_id      String
-  community_id String
-  created_at   DateTime @default(now())
+  id             String   @id @default(uuid())
+  user_id        String
+  community_id   String
+  user_name      String
+  community_name String
+  created_at     DateTime @default(now())
 
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -177,9 +179,11 @@ model User_Blockeds {
 }
 
 model User_Favorites_Communities {
-  id           String @id
-  user_id      String
-  community_id String
+  id             String @id
+  user_id        String
+  community_id   String
+  user_name      String
+  community_name String
 
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -195,9 +199,11 @@ model User_Silenced_Communities {
 }
 
 model Community_Mods {
-  id           String @id
-  community_id String
-  user_id      String
+  id             String @id
+  community_id   String
+  user_id        String
+  user_name      String
+  community_name String
 
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)

@@ -88,4 +88,23 @@ export class CommunityController {
 			}
 		}
 	};
+
+	addDescription = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+
+			const { communityId } = req.params;
+			const { description } = req.body;
+
+			await this.communityBusiness.addDescription(token, communityId, description);
+
+			res.status(200).send('Description successfully added');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
 }

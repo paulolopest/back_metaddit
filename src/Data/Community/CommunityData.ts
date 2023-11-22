@@ -2,11 +2,6 @@ import { v4 } from 'uuid';
 import { prisma } from '../BaseDatabase';
 import { UserData } from './../User/UserData';
 
-type Rules = {
-	title: string;
-	description: string;
-};
-
 export class CommunityData {
 	constructor(private userData: UserData) {}
 
@@ -91,10 +86,8 @@ export class CommunityData {
 		}
 	};
 
-	addFlags = async (communityId: string, flagName: string, color: string) => {
+	addFlag = async (communityId: string, flagName: string, color: string) => {
 		try {
-			const flag: any = { flag: flagName, color: color };
-
 			await prisma.community.update({
 				where: {
 					id: communityId,
@@ -102,12 +95,28 @@ export class CommunityData {
 
 				data: {
 					flags: {
-						set: [
-							{
-								flag: flagName,
-								color: color,
-							},
-						],
+						push: {
+							flag: flagName,
+							color: color,
+						},
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	removeFlag = async (communityId: string, newArray: Array<object>) => {
+		try {
+			await prisma.community.update({
+				where: {
+					id: communityId,
+				},
+
+				data: {
+					flags: {
+						set: newArray,
 					},
 				},
 			});

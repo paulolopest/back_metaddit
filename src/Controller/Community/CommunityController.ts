@@ -22,16 +22,35 @@ export class CommunityController {
 		}
 	};
 
-	addFlags = async (req: Request, res: Response) => {
+	addFlag = async (req: Request, res: Response) => {
 		try {
 			const token: string = req.headers.authorization as string;
 
 			const { communityId } = req.params;
 			const { flag, color } = req.body;
 
-			await this.communityBusiness.addFlags(token, communityId, flag, color);
+			await this.communityBusiness.addFlag(token, communityId, flag, color);
 
-			res.status(200).send('Description successfully added');
+			res.status(200).send('Flag successfully added');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
+	removeFlag = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+
+			const { communityId } = req.params;
+			const { flag } = req.body;
+
+			await this.communityBusiness.removeFlag(token, communityId, flag);
+
+			res.status(200).send('Flag successfully removed');
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				res.status(error.statusCode).send(error.message);

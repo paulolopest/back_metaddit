@@ -61,6 +61,34 @@ export class CommunityBusiness {
 			}
 		}
 	};
+	addFlags = async (token: string, communityId: string, flag: string, color: string) => {
+		try {
+			if (!token) throw new CustomError(401, 'Login first');
+			if (!communityId) throw new CustomError(400, 'Enter a community id');
+			if (!flag) throw new CustomError(400, 'Enter a flag');
+			if (!color) throw new CustomError(400, 'Enter a color');
+
+			if (flag.length > 15) {
+				throw new CustomError(413, 'Description must contain a maximum of 15 characters');
+			}
+
+			const community = await this.communityData.getCommunityById(communityId);
+			if (!community) throw new CustomError(404, 'Community not found');
+
+			const { id } = this.tokenManager.getTokenData(token);
+
+			const checkMod = await this.communityData.getSpecificMod(community.id, id);
+			if (!checkMod) throw new CustomError(403, 'Only mods can update community data');
+
+			await this.communityData.addFlags(communityId, flag, color);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
 
 	addModerator = async (token: string, username: string, communityId: string) => {
 		try {

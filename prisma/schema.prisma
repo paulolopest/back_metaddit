@@ -81,6 +81,7 @@ model Community {
   nsfw          Boolean?       @default(false)
   created_at    DateTime       @default(now())
   rules         Json[]
+  flags         Json[]
 
   Community_style            Community_style?
   Post                       Post[]

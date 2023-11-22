@@ -91,6 +91,31 @@ export class CommunityData {
 		}
 	};
 
+	addFlags = async (communityId: string, flagName: string, color: string) => {
+		try {
+			const flag: any = { flag: flagName, color: color };
+
+			await prisma.community.update({
+				where: {
+					id: communityId,
+				},
+
+				data: {
+					flags: {
+						set: [
+							{
+								flag: flagName,
+								color: color,
+							},
+						],
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	getCommunityById = async (id: string) => {
 		try {
 			return await prisma.community.findUnique({

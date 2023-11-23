@@ -114,13 +114,37 @@ export class UserBusiness {
 			if (!communityId) throw new CustomError(400, 'Enter a community id');
 
 			const community = this.communityData.getCommunityById(communityId);
-
 			if (!community) throw new CustomError(404, 'Community not found');
 
 			const user = this.tokenManager.getTokenData(token);
-			const id = this.idGenerator.generate();
+
+			const checkFollow = await this.userData.findFollow(communityId, user.id);
+			if (checkFollow) throw new CustomError(404, 'Community already followed');
 
 			await this.userData.followCommunity(user.id, communityId);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	unfollowCommunity = async (token: string, communityId: string) => {
+		try {
+			if (!token) throw new CustomError(409, 'Login first');
+			if (!communityId) throw new CustomError(400, 'Enter a community id');
+
+			const community = this.communityData.getCommunityById(communityId);
+			if (!community) throw new CustomError(404, 'Community not found');
+
+			const { id } = this.tokenManager.getTokenData(token);
+
+			const checkFollow = await this.userData.findFollow(communityId, id);
+			if (!checkFollow) throw new CustomError(404, 'Community not followed');
+
+			await this.userData.unfollowCommunity(id, communityId);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);

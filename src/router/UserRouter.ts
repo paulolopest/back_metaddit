@@ -23,9 +23,10 @@ export const userRouter: Router = express.Router();
 userRouter.post('/signup', userController.signup);
 userRouter.post('/login', userController.login);
 userRouter.post('/user/validate-token', userController.validateToken);
+userRouter.post('/user/follow/community/:communityId', userController.followCommunity);
 
 userRouter.get('/profile', userController.getUser);
 userRouter.get('/profile/mod/communities', userController.getMyModCommunities);
 userRouter.get('/profile/followed/communities', userController.getFollowedCommunities);
 
-userRouter.post('/user/follow/community/:communityId', userController.followCommunity);
+userRouter.delete('/user/unfollow/community/:communityId', userController.unfollowCommunity);

@@ -111,6 +111,38 @@ export class UserData {
 		}
 	};
 
+	findFollow = async (communityId: string, userId: string) => {
+		try {
+			return await prisma.user_Community_Follow.findFirst({
+				where: {
+					user_id: userId,
+
+					AND: {
+						community_id: communityId,
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	unfollowCommunity = async (userId: string, communityId: string) => {
+		try {
+			const column = await this.findFollow(communityId, userId);
+
+			if (column) {
+				await prisma.user_Community_Follow.delete({
+					where: {
+						id: column.id,
+					},
+				});
+			}
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	getFollowedCommunities = async (userId: string) => {
 		try {
 			return await prisma.community.findMany({

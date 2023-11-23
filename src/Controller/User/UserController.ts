@@ -84,6 +84,23 @@ export class UserController {
 		}
 	};
 
+	unfollowCommunity = async (req: Request, res: Response) => {
+		try {
+			const token = req.headers.authorization as string;
+			const { communityId } = req.params;
+
+			await this.userBusiness.unfollowCommunity(token, communityId);
+
+			res.status(200).send('Community was unfollow');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
 	getFollowedCommunities = async (req: Request, res: Response) => {
 		try {
 			const token = req.headers.authorization as string;

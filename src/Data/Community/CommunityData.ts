@@ -125,6 +125,27 @@ export class CommunityData {
 		}
 	};
 
+	addRule = async (communityId: string, title: string, description: string) => {
+		try {
+			await prisma.community.update({
+				where: {
+					id: communityId,
+				},
+
+				data: {
+					rules: {
+						push: {
+							title: title,
+							description: description,
+						},
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	getCommunityById = async (id: string) => {
 		try {
 			return await prisma.community.findUnique({
@@ -148,18 +169,34 @@ export class CommunityData {
 			if (cmt) {
 				return await prisma.community.findUnique({
 					where: {
-						name: cmt.name,
+						name: name,
 					},
 
-					include: {
+					select: {
+						id: true,
+						owner_id: true,
+						name: true,
+						bio: true,
+						banner_img: true,
+						profile_img: true,
+						language: true,
+						country: true,
+						type: true,
+						primary_topic: true,
+						topics: true,
+						nsfw: true,
+						created_at: true,
+						rules: true,
+						flags: true,
+						Community_style: true,
+						Community_Mods: true,
 						_count: {
 							select: {
 								User_Community_Follow: {
 									where: {
-										community_id: cmt.id,
+										community_name: cmt.id,
 									},
 								},
-
 								Post: {
 									where: {
 										community_id: cmt.id,
@@ -167,20 +204,10 @@ export class CommunityData {
 								},
 							},
 						},
-
-						Community_style: {
-							where: {
-								community_id: cmt.id,
-							},
-						},
-
-						Community_Mods: {
-							where: {
-								community_id: cmt.id,
-							},
-						},
 					},
 				});
+			} else {
+				throw new Error('Community not found');
 			}
 		} catch (error: any) {
 			throw new Error(error.message);

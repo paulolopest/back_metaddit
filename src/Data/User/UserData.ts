@@ -27,6 +27,8 @@ export class UserData {
 	getUser = async (id: string) => {
 		try {
 			const res = await prisma.user.findUnique({
+				where: { id: id },
+
 				select: {
 					id: true,
 					email: true,
@@ -39,8 +41,8 @@ export class UserData {
 					profile_img: true,
 					karma: true,
 					User_config: true,
+					User_Community_Follow: true,
 				},
-				where: { id: id },
 			});
 
 			return res;

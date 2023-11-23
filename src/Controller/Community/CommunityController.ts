@@ -60,6 +60,25 @@ export class CommunityController {
 		}
 	};
 
+	addRule = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+
+			const { communityId } = req.params;
+			const { title, description } = req.body;
+
+			await this.communityBusiness.addRule(token, communityId, title, description);
+
+			res.status(200).send('Rule successfully added');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
 	addModerator = async (req: Request, res: Response) => {
 		try {
 			const token: string = req.headers.authorization as string;

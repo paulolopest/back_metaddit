@@ -130,6 +130,38 @@ export class CommunityBusiness {
 		}
 	};
 
+	addRule = async (token: string, communityId: string, title: string, description: string) => {
+		try {
+			if (!token) throw new CustomError(401, 'Login first');
+			if (!communityId) throw new CustomError(400, 'Enter a community id');
+			if (!title) throw new CustomError(400, 'Enter a title');
+			if (!description) throw new CustomError(400, 'Enter a description');
+
+			if (title.length > 40) {
+				throw new CustomError(413, 'Title must contain a maximum of 40 characters');
+			}
+
+			const community = await this.communityData.getCommunityById(communityId);
+			if (!community) throw new CustomError(404, 'Community not found');
+
+			const { id } = this.tokenManager.getTokenData(token);
+
+			const checkMod = await this.communityData.getSpecificMod(community.id, id);
+			if (!checkMod) throw new CustomError(403, 'Only mods can update community data');
+
+			const checkRule = community.rules.find((item: any) => item.title === title);
+			if (checkRule) throw new CustomError(409, 'Rule already exist');
+
+			await this.communityData.addRule(communityId, title, description);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
 	addModerator = async (token: string, username: string, communityId: string) => {
 		try {
 			if (!token) throw new CustomError(401, 'Login first');

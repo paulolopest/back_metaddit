@@ -42,6 +42,7 @@ export class UserData {
 					karma: true,
 					User_config: true,
 					User_Community_Follow: true,
+					Community_Mods: true,
 				},
 			});
 

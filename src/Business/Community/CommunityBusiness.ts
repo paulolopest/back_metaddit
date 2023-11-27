@@ -247,4 +247,21 @@ export class CommunityBusiness {
 			}
 		}
 	};
+
+	getPost = async (communityId: string) => {
+		try {
+			if (!communityId) throw new CustomError(400, 'Enter a community id');
+
+			const community = await this.communityData.getCommunityById(communityId);
+			if (!community) throw new CustomError(404, 'Community not found');
+
+			return await this.communityData.getPost(communityId);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
 }

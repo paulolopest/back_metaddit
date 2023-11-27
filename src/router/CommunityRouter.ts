@@ -27,5 +27,6 @@ communityRouter.post('/community/:communityId/rule/add', communityController.add
 communityRouter.get('/community/:communityId/get/mods', communityController.getMods);
 communityRouter.get('/community/:name', communityController.getCMTByName);
 communityRouter.get('/community/:communityName/mod/verify', communityController.verifyMod);
+communityRouter.get('/community/posts/:communityId', communityController.getPost);
 
 communityRouter.put('/community/:communityId/flag/remove', communityController.removeFlag);

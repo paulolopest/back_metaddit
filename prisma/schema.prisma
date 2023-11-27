@@ -114,10 +114,12 @@ model Post {
   img          String?
   created_at   DateTime  @default(now())
   updated_at   DateTime?
-  votes        BigInt    @default(0)
-  spoiler      Boolean
+  votes        Int?      @default(0)
+  spoiler      Boolean   @default(false)
+  flags        String?
 
-  Comment   Comment[]
+  Comment Comment[]
+
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   community Community @relation(fields: [community_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -131,9 +133,10 @@ model Comment {
   created_at  DateTime  @default(now())
   updated_at  DateTime?
 
-  user           User             @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  post           Post             @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Comment_Replie Comment_Replie[]
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Comment_Replie {

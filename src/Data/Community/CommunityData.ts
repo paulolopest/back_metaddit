@@ -273,4 +273,34 @@ export class CommunityData {
 			throw new Error(error.message);
 		}
 	};
+
+	getSpecificFollow = async (communityId: string, userId: string) => {
+		try {
+			return await prisma.user_Community_Follow.findFirst({
+				where: {
+					community_id: communityId,
+
+					AND: {
+						user_id: userId,
+					},
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getPost = async (communityId: string) => {
+		try {
+			const result = await prisma.post.findMany({
+				where: {
+					community_id: communityId,
+				},
+			});
+
+			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 }

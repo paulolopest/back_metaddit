@@ -164,4 +164,20 @@ export class CommunityController {
 			}
 		}
 	};
+
+	getPost = async (req: Request, res: Response) => {
+		try {
+			const { communityId } = req.params;
+
+			const result = await this.communityBusiness.getPost(communityId);
+
+			res.status(200).send(result);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
 }

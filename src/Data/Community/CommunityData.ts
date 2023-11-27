@@ -296,6 +296,14 @@ export class CommunityData {
 				where: {
 					community_id: communityId,
 				},
+
+				include: {
+					user: {
+						select: {
+							username: true,
+						},
+					},
+				},
 			});
 
 			return result;

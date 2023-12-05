@@ -27,4 +27,14 @@ export class PostData {
 			throw new Error(error.message);
 		}
 	};
+
+	getPostById = async (id: string) => {
+		try {
+			return await prisma.post.findUnique({
+				where: { id },
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 }

@@ -20,3 +20,5 @@ export const postRouter: Router = express.Router();
 //Routes
 
 postRouter.post('/post/add/:communityId', postController.addPost);
+
+postRouter.get('/post/:id', postController.getPostById);

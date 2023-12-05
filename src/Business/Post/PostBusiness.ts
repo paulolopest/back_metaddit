@@ -46,4 +46,21 @@ export class PostBusiness {
 			}
 		}
 	};
+
+	getPostById = async (postId: string) => {
+		try {
+			if (!postId) throw new CustomError(400, 'Enter a post id');
+
+			const post = await this.postData.getPostById(postId);
+			if (!post) throw new CustomError(404, 'Post not found');
+
+			return post;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
 }

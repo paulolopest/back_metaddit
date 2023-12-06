@@ -32,6 +32,24 @@ export class PostData {
 		try {
 			return await prisma.post.findUnique({
 				where: { id },
+				select: {
+					id: true,
+					community_id: true,
+					user_id: true,
+					title: true,
+					description: true,
+					img: true,
+					created_at: true,
+					updated_at: true,
+					votes: true,
+					spoiler: true,
+					flags: true,
+					_count: {
+						select: {
+							Comment: true,
+						},
+					},
+				},
 			});
 		} catch (error: any) {
 			throw new Error(error.message);

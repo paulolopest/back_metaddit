@@ -290,21 +290,59 @@ export class CommunityData {
 		}
 	};
 
-	getPost = async (communityId: string) => {
+	getPost = async (communityId: string, order?: string, by?: string, at?: string) => {
 		try {
-			const result = await prisma.post.findMany({
-				where: {
-					community_id: communityId,
-				},
+			let startDate = new Date();
 
-				include: {
+			if (at === '24h') {
+				startDate.setDate(startDate.getDate() - 1);
+			} else if (at === '7d') {
+				startDate.setDate(startDate.getDate() - 7);
+			} else if (at === '1m') {
+				startDate.setMonth(startDate.getMonth() - 1);
+			}
+
+			const orderByParam = order;
+			let orderByOptions: any = {};
+
+			orderByOptions[orderByParam as string] = by as string;
+
+			let result = await prisma.post.findMany({
+				select: {
+					id: true,
+					community_id: true,
+					user_id: true,
+					title: true,
+					description: true,
+					img: true,
+					created_at: true,
+					updated_at: true,
+					votes: true,
+					spoiler: true,
+					flags: true,
+					_count: {
+						select: {
+							Comment: true,
+						},
+					},
 					user: {
 						select: {
 							username: true,
 						},
 					},
 				},
+
+				orderBy: orderByOptions,
+
+				where: {
+					community_id: communityId,
+					created_at: {
+						gte: startDate,
+					},
+				},
 			});
+
+			console.log(order);
 
 			return result;
 		} catch (error: any) {

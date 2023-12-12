@@ -167,9 +167,9 @@ export class CommunityController {
 
 	getPost = async (req: Request, res: Response) => {
 		try {
-			const { communityId } = req.params;
+			const { communityId, order, by, at } = req.params;
 
-			const result = await this.communityBusiness.getPost(communityId);
+			const result = await this.communityBusiness.getPost(communityId, order, by, at);
 
 			res.status(200).send(result);
 		} catch (error: any) {

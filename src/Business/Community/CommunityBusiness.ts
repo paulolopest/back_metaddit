@@ -248,14 +248,14 @@ export class CommunityBusiness {
 		}
 	};
 
-	getPost = async (communityId: string) => {
+	getPost = async (communityId: string, order?: string, by?: string, at?: string) => {
 		try {
 			if (!communityId) throw new CustomError(400, 'Enter a community id');
 
 			const community = await this.communityData.getCommunityById(communityId);
 			if (!community) throw new CustomError(404, 'Community not found');
 
-			return await this.communityData.getPost(communityId);
+			return await this.communityData.getPost(communityId, order as string, by as string, at as string);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);

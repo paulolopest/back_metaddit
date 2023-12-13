@@ -292,13 +292,16 @@ export class CommunityData {
 
 	getPost = async (communityId: string, order?: string, by?: string, at?: string) => {
 		try {
-			let startDate = new Date();
+			let startDate;
 
 			if (at === '24h') {
+				startDate = new Date();
 				startDate.setDate(startDate.getDate() - 1);
 			} else if (at === '7d') {
+				startDate = new Date();
 				startDate.setDate(startDate.getDate() - 7);
 			} else if (at === '1m') {
+				startDate = new Date();
 				startDate.setMonth(startDate.getMonth() - 1);
 			}
 
@@ -341,8 +344,6 @@ export class CommunityData {
 					},
 				},
 			});
-
-			console.log(order);
 
 			return result;
 		} catch (error: any) {

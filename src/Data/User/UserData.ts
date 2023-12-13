@@ -147,6 +147,35 @@ export class UserData {
 	getFollowedCommunities = async (userId: string) => {
 		try {
 			return await prisma.community.findMany({
+				select: {
+					id: true,
+					owner_id: true,
+					name: true,
+					bio: true,
+					banner_img: true,
+					profile_img: true,
+					language: true,
+					country: true,
+					type: true,
+					primary_topic: true,
+					topics: true,
+					nsfw: true,
+					created_at: true,
+					rules: true,
+					flags: true,
+					Community_style: true,
+					Community_Mods: true,
+					_count: {
+						select: {
+							User_Community_Follow: {
+								where: {
+									user_id: userId,
+								},
+							},
+						},
+					},
+				},
+
 				where: {
 					User_Community_Follow: {
 						some: {

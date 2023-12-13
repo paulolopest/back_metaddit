@@ -194,7 +194,7 @@ export class CommunityData {
 							select: {
 								User_Community_Follow: {
 									where: {
-										community_name: cmt.id,
+										community_id: cmt.id,
 									},
 								},
 								Post: {

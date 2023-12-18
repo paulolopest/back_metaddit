@@ -9,9 +9,9 @@ export class PostController {
 		try {
 			const token: string = req.headers.authorization as string;
 			const { communityId } = req.params;
-			const { title, description, img, spoiler, flag } = req.body;
+			const { title, description, img, spoiler, flag, nsfw } = req.body;
 
-			await this.postBusiness.addPost(token, communityId, title, spoiler, description, img, flag);
+			await this.postBusiness.addPost(token, communityId, title, spoiler, description, img, flag, nsfw);
 
 			res.status(201).send('Post successfully created');
 		} catch (error: any) {

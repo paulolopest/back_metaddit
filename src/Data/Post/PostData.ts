@@ -10,7 +10,8 @@ export class PostData {
 		description?: string,
 		img?: string,
 		spoiler?: boolean,
-		flag?: string
+		flag?: string,
+		nsfw?: boolean
 	) => {
 		try {
 			await prisma.post.create({
@@ -23,6 +24,7 @@ export class PostData {
 					img,
 					spoiler,
 					flags: flag,
+					nsfw,
 				} as Prisma.PostCreateInput,
 			});
 		} catch (error: any) {

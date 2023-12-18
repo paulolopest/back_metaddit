@@ -116,7 +116,8 @@ model Post {
   updated_at   DateTime?
   votes        Int?      @default(0)
   spoiler      Boolean   @default(false)
-  flags        String?
+  flags        Json?
+  nsfw         Boolean   @default(false)
 
   Comment Comment[]
 

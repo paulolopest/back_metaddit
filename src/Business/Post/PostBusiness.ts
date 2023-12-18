@@ -18,7 +18,8 @@ export class PostBusiness {
 		title: string,
 		spoiler?: boolean,
 		description?: string,
-		img?: string
+		img?: string,
+		flag?: string
 	) => {
 		try {
 			if (!token) throw new CustomError(401, 'Login first');
@@ -37,7 +38,7 @@ export class PostBusiness {
 
 			const id: string = this.idGenerator.generate();
 
-			await this.postData.addPost(id, communityId, user.id, title, description, img, spoiler);
+			await this.postData.addPost(id, communityId, user.id, title, description, img, spoiler, flag);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
